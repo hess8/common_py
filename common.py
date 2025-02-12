@@ -183,4 +183,10 @@ def dirSize(path):
                     size += dirSize(entry.path)
     return size
 
-
+def checkAdminRights():
+    import ctypes, os
+    try:
+        is_admin = os.getuid() == 0
+    except AttributeError:
+        is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+    return is_admin
