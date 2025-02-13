@@ -62,6 +62,18 @@ keepC2 = [
     'Yellowstone_Park'
 ]
 
+def subPopenTry(cmd):
+    try:
+        proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,shell=True)
+        output, error = proc.communicate()
+        if proc.returncode != 0:
+            raise subprocess.CalledProcessError(proc.returncode, proc.args, output=output, stderr=error)
+        lines = output.splitlines()
+        return lines
+    except subprocess.CalledProcessError as e:outputLines
+        sys.exit('Stop: Error output: {} on cmd "{}"'.format(e.stderr, ' '.join(cmd)))
+        return e.stderr
+
 def pathWinLin(path):
     linuxPathStart = '/mnt/'
     winDrives = ['A','C']
