@@ -33,7 +33,7 @@ landscapesMap = {
     '': '',
 }
 
-keepC2 = [
+keepC2 = [  #of those that aren't in landscapesMap
     'AlleghenyRidges',
     'Arizona2',
     'Baja_California',
@@ -68,15 +68,15 @@ def subPopenTry(cmd):
         output, error = proc.communicate()
         if proc.returncode != 0:
             raise subprocess.CalledProcessError(proc.returncode, proc.args, output=output, stderr=error)
-        lines = output.splitlines()
-        return lines
-    except subprocess.CalledProcessError as e:outputLines
+        outputLines = output.splitlines()
+        return outputLines
+    except subprocess.CalledProcessError as e:
         sys.exit('Stop: Error output: {} on cmd "{}"'.format(e.stderr, ' '.join(cmd)))
         return e.stderr
 
 def pathWinLin(path):
     linuxPathStart = '/mnt/'
-    winDrives = ['A','C']
+    winDrives = ['A','C','D','F']
     winSambaDrive = sambaServer  # includes Samba windows mapped drive
     list = path.split(os.sep)
     driveLetter = list[0]
@@ -111,7 +111,7 @@ def buildDirs(finalPath):
         if not os.path.exists(path):
             os.mkdir(path)
     if path != finalPath:
-        sys.exit('Stop...buildDirs failed ')
+        sys.exit('Stop...buildDirs failed. You might need to add the windows drive letter to pathWinLin')
 
 
 def renameDirsWithTag(dirsList,tags,tagReplacement):
@@ -136,6 +136,12 @@ def writefile(lines,filepath): #need to have \n's inserted already
     file1.writelines(lines)
     file1.close()
     return
+
+def conditionDivide(numerator,denominator):
+    if denominator > 0:
+        return str(int(numerator//denominator))
+    else:
+        return 0
 
 def renameTry(oldname, newname):
     shutil.move(oldname, newname)
