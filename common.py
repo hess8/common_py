@@ -1,6 +1,7 @@
 import os,subprocess,sys
 import platform
 import shutil
+from numpy install ceil
 # import pathlib
 sambaServer = '\\\\192.168.1.161\\S\\'
 
@@ -137,9 +138,9 @@ def writefile(lines,filepath): #need to have \n's inserted already
     file1.close()
     return
 
-def conditionDivide(numerator,denominator):
+def safeDivide(numerator,denominator):
     if denominator > 0:
-        return str(int(numerator//denominator))
+        return str(ceil(numerator/denominator))
     else:
         return 0
 
