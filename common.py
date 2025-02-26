@@ -218,8 +218,10 @@ def getOKor(action,string):
             if response.lower() == 'n':
                 if action == 'break':
                     break
-                elif action == 'stop':
-                    sys.exit('Stop')
                 elif action == 'continue':
                     continue
+                elif action == 'stop':
+                    sys.exit('Stop')
+                else:
+                    sys.exit('Cannot parse action in getOKor:', action)
 
