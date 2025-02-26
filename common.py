@@ -210,10 +210,16 @@ def checkAdminRights():
         is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
     return is_admin
 
-def getOKorStop(string):
+def getOKor(action,string):
         response = 'None'
         while response.lower() != 'y':
             print('\n {} ?'.format(string))
             response = input('Y/N: ')
             if response.lower() == 'n':
-                sys.exit('Stop')
+                if action == 'break':
+                    break
+                elif action == 'stop':
+                    sys.exit('Stop')
+                elif action == 'continue':
+                    continue
+
