@@ -1,7 +1,7 @@
 import os,subprocess,sys
 import platform
 import shutil
-from numpy install ceil
+from numpy import ceil
 # import pathlib
 sambaServer = '\\\\192.168.1.161\\S\\'
 
@@ -140,7 +140,7 @@ def writefile(lines,filepath): #need to have \n's inserted already
 
 def safeDivide(numerator,denominator):
     if denominator > 0:
-        return str(ceil(numerator/denominator))
+        return ceil(numerator/denominator)
     else:
         return 0
 
@@ -209,3 +209,11 @@ def checkAdminRights():
     except AttributeError:
         is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
     return is_admin
+
+def getOKorStop(string):
+        response = 'None'
+        while response.lower() != 'y':
+            print('\n {} ?'.format(string))
+            response = input('Y/N: ')
+            if response.lower() == 'n':
+                sys.exit('Stop')
