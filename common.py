@@ -3,7 +3,11 @@ import platform
 import shutil
 from numpy import ceil
 # import pathlib
-sambaServer = '\\\\192.168.1.161\\S\\'
+#sambaServer = '\\\\192.168.1.40\\S\\'
+sambaServer = 'S:\\'
+
+versions = ['C2','C3']
+versionUpdateTag = '_to_{}'.format(versions[1])
 
 landscapesMap = {
     'AA2': 'AA3',
@@ -77,7 +81,7 @@ def subPopenTry(cmd):
 
 def pathWinLin(path):
     linuxPathStart = '/mnt/'
-    winDrives = ['A','C','D','F']
+    winDrives = ['A','C','D','F','S'] #including S means sambaserver path won't be used
     winSambaDrive = sambaServer  # includes Samba windows mapped drive
     list = path.split(os.sep)
     driveLetter = list[0]
@@ -213,7 +217,7 @@ def checkAdminRights():
 def getOKor(action,string):
         response = 'None'
         while response.lower() != 'y':
-            print('\n {} ?'.format(string))
+            print('\n {}'.format(string))
             response = input('Y/N: ')
             if response.lower() == 'n':
                 if action == 'break':
@@ -225,3 +229,25 @@ def getOKor(action,string):
                 else:
                     sys.exit('Cannot parse action in getOKor:', action)
 
+def getLandPaths(topLandDirs, versionUpdateTag, args):
+    from more_itertools import sort_together
+    '''Gets landscapes names and paths from dirs with Textures subdir'''
+    allLands = []
+    allLandPaths = []
+    for topDir in topLandDirs:
+        items = os.listdir(topDir)
+        for item in items:
+            itemPath = os.path.join(topDir, item)
+            if (not os.path.isdir(itemPath)) or  ('Textures' not in os.listdir(itemPath)
+              or 'WestGermany3' in item or 'Slovenia'  in item or versionUpdateTag in item):
+                continue # note: isdir is true for a link pointing to a dir
+            if not item in allLands:
+                allLands.append(item)
+                allLandPaths.append(itemPath)
+                cupFile = os.path.join(itemPath,item+'.cup')
+                if not os.path.exists(cupFile) and 'Textures' in os.listdir(itemPath): #.cup file required for COTACO task converter
+                    os.system('echo "name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,descr \n" > {}'.format(cupFile))
+                    print('created', cupFile)
+
+    allLands, allLandPaths = sort_together([allLands, allLandPaths],reverse=args.reverse)
+    return allLands, allLandPaths
