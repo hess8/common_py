@@ -238,9 +238,9 @@ def getLandPaths(topLandDirs, versionUpdateTag, args):
         items = os.listdir(topDir)
         for item in items:
             itemPath = os.path.join(topDir, item)
-            if (not os.path.isdir(itemPath)) or  ('Textures' not in os.listdir(itemPath)
-              or 'WestGermany3' in item or 'Slovenia'  in item or versionUpdateTag in item):
+            if (not os.path.isdir(itemPath)) or  ('Textures' not in os.listdir(itemPath) or versionUpdateTag in item):
                 continue # note: isdir is true for a link pointing to a dir
+            if args.omit and ('WestGermany3' in item or 'Slovenia'  in item ):
             if not item in allLands:
                 allLands.append(item)
                 allLandPaths.append(itemPath)
