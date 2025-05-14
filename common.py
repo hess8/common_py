@@ -216,9 +216,9 @@ def checkAdminRights():
 
 def getOKor(action,string):
         response = 'None'
-        while response.lower() != 'y':
+        while response.lower() not in ['y','ok']:
             print('\n {}'.format(string))
-            response = input('Y/N: ')
+            response = input('Y,OK/N: ')
             if response.lower() == 'n':
                 if action == 'break':
                     break
