@@ -15,6 +15,7 @@ landscapesMap = {
     'Atacama_C2': 'Atacama3',
     'Cajamarca_Peru': 'Cajamarca_Peru3',
     'Centro_Italia': 'Centro_Italia3',
+    'Colorado_C2': 'Colorado_V3x',
     'Coquimbo_SanJuan': 'CoquimboSanJuan3',
     'Cuzco_Peru': 'Cuzco_Peru3',
     'Husacaran_Peru': 'Huascaran_Peru3',
