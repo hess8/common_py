@@ -15,6 +15,7 @@ landscapesMap = {
     'Atacama_C2': 'Atacama3',
     'Cajamarca_Peru': 'Cajamarca_Peru3',
     'Centro_Italia': 'Centro_Italia3',
+    'Colorado_C2': 'Colorado_V3x',
     'Coquimbo_SanJuan': 'CoquimboSanJuan3',
     'Cuzco_Peru': 'Cuzco_Peru3',
     'Husacaran_Peru': 'Huascaran_Peru3',
@@ -216,9 +217,9 @@ def checkAdminRights():
 
 def getOKor(action,string):
         response = 'None'
-        while response.lower() != 'y':
+        while response.lower() not in ['y','ok']:
             print('\n {}'.format(string))
-            response = input('Y/N: ')
+            response = input('Y,OK/N: ')
             if response.lower() == 'n':
                 if action == 'break':
                     break
@@ -242,6 +243,8 @@ def getLandPaths(topLandDirs, versionUpdateTag, args):
               #or 'WestGermany3' in item
                 or 'Slovenia'  in item or versionUpdateTag in item):
                 continue # note: isdir is true for a link pointing to a dir
+            if args.omit and ('WestGermany3' in item or 'Slovenia' in item ):
+                continue
             if not item in allLands:
                 allLands.append(item)
                 allLandPaths.append(itemPath)
