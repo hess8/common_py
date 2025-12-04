@@ -238,8 +238,9 @@ def getLandPaths(topLandDirs, versionUpdateTag, args):
         items = os.listdir(topDir)
         for item in items:
             itemPath = os.path.join(topDir, item)
-            if (not os.path.isdir(itemPath)) or  ('Textures' not in os.listdir(itemPath)
-              or 'WestGermany3' in item or 'Slovenia'  in item or versionUpdateTag in item):
+            if (not os.path.isdir(itemPath)) or  ('Textures' not in os.listdir(itemPath)\
+              #or 'WestGermany3' in item
+                or 'Slovenia'  in item or versionUpdateTag in item):
                 continue # note: isdir is true for a link pointing to a dir
             if not item in allLands:
                 allLands.append(item)
@@ -251,3 +252,24 @@ def getLandPaths(topLandDirs, versionUpdateTag, args):
 
     allLands, allLandPaths = sort_together([allLands, allLandPaths],reverse=args.reverse)
     return allLands, allLandPaths
+
+class Tee:
+    def __init__(self, filename, mode="w"):
+        self.file = open(filename, mode)
+        self.stdout = sys.stdout
+
+    def write(self, data):
+        self.file.write(data)
+        self.stdout.write(data)
+
+    def flush(self):
+        self.file.flush()
+        self.stdout.flush()
+
+    def __enter__(self):
+        sys.stdout = self
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        sys.stdout = self.stdout
+        self.file.close()
