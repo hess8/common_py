@@ -215,6 +215,16 @@ def checkAdminRights():
         is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
     return is_admin
 
+def getConfirmation(string):
+    response = 'None'
+    while response.lower() not in ['yy','nn']:
+        print('\n {}'.format(string))
+        response = input('yy/nn ')
+        if response.lower() == 'yy':
+            return True
+        elif response.lower() == 'nn':
+            return False
+
 def getLandPaths(topLandDirs, versionUpdateTag, args):
     from more_itertools import sort_together
     '''Gets landscapes names and paths from dirs with Textures subdir'''
