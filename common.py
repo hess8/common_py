@@ -219,7 +219,7 @@ def getConfirmation(string):
     response = 'None'
     while response.lower() not in ['yy','nn']:
         print('\n {}'.format(string))
-        response = input('yy/nn ')
+        response = input('(yy/nn)? ')
         if response.lower() == 'yy':
             return True
         elif response.lower() == 'nn':
