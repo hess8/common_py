@@ -218,20 +218,15 @@ def checkAdminRights():
         is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
     return is_admin
 
-def getOKor(action,string):
-        response = 'None'
-        while response.lower() not in ['y','ok']:
-            print('\n {}'.format(string))
-            response = input('Y,OK/N: ')
-            if response.lower() == 'n':
-                if action == 'break':
-                    break
-                elif action == 'continue':
-                    continue
-                elif action == 'stop':
-                    sys.exit('Stop')
-                else:
-                    sys.exit('Cannot parse action in getOKor:', action)
+def getConfirmation(string):
+    response = 'None'
+    while response.lower() not in ['yy','nn']:
+        print('\n {}'.format(string))
+        response = input('(yy/nn)? ')
+        if response.lower() == 'yy':
+            return True
+        elif response.lower() == 'nn':
+            return False
 
 def getLandPaths(topLandDirs, versionUpdateTag, args):
     from more_itertools import sort_together
