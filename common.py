@@ -80,18 +80,18 @@ def subPopenTry(cmd):
         sys.exit('Stop: Error output: {} on cmd "{}"'.format(e.stderr, ' '.join(cmd)))
         return e.stderr
 
-def pathWinLin(path):
+def pathWinLin(path, winPathStart):
+    # V: is windows VM drive assighed to shared_VMs
     linuxPathStart = '/mnt/'
-    winDrives = ['A','C','D','F','S'] #including S means sambaserver path won't be used
-    winSambaDrive = sambaServer  # includes Samba windows mapped drive
+    winLocalDrives = ['A','C','D','F']
     list = path.split(os.sep)
     driveLetter = list[0]
     if platform.system() == 'Windows':
-        if driveLetter.upper() in winDrives:
+        if driveLetter.upper() in winLocalDrives:
             list[0] += ':'
-            path = os.sep.join(list)
-        elif winSambaDrive not in path:
-            path = winSambaDrive + path
+        elif winPathStart not in path:
+            list[0] = winPathStart + list[0]
+        path = os.sep.join(list)
     elif linuxPathStart not in path:
         path = linuxPathStart + path
     return path
@@ -164,6 +164,12 @@ def makeLink(truePath,linkPath):
         # except:
         #     print('Problem creating true {} <-> link {}'.format(truePath,linkPath))
 
+def moveFile(path1,path2):
+    try:
+        shutil.move(path1,path2)
+        print('\t\tMoved {} to {}'.format(path1,path2))
+    except:
+        print('\tError in moving file {} to {}'.format(path1,path2))
 
 
 def copy_file_to_guest(vm_name, host_file_path, guest_file_path,usernm,passwd):
@@ -178,12 +184,7 @@ def copy_file_to_guest(vm_name, host_file_path, guest_file_path,usernm,passwd):
         '--username={}'.format(usernm),
         '--password={}'.format(passwd)
     ]
-    try:
-        subprocess.check_output(cmd)
-        e = None
-    except subprocess.CalledProcessError as e:
-        print(e.output)
-    return e
+    return subPopenTry(cmd) #if no error, None
 
 
 def listRunningVms():
@@ -241,7 +242,7 @@ def getLandPaths(topLandDirs, versionUpdateTag, args):
               #or 'WestGermany3' in item
                 or 'Slovenia'  in item or versionUpdateTag in item):
                 continue # note: isdir is true for a link pointing to a dir
-            if args.omit and ('WestGermany3' in item or 'Slovenia' in item ):
+            if args.omit and ('Slovenia' in item ):
                 continue
             if not item in allLands:
                 allLands.append(item)
@@ -274,3 +275,33 @@ class Tee:
     def __exit__(self, exc_type, exc_val, exc_tb):
         sys.stdout = self.stdout
         self.file.close()
+
+def subPopenTry(cmd):
+    '''If > is in command Will dump output lines to path'''
+    if '>' in cmd:
+        if isinstance(cmd, str):
+            cmd = cmd.replace('  ', ' ').split(' ')
+        destination = cmd[-1]
+        base_cmd = cmd[:-2]
+        with open(destination, "wb") as fh:
+            output_lines = watch_proc(subprocess.Popen(base_cmd, stdout=fh, stderr=subprocess.PIPE))
+    else:
+        output_lines = watch_proc(subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE))
+    if 'error' in output_lines:
+        return output_lines
+    else:
+        print(output_lines)
+    # sys.exit('Stop: Error output: {} on cmd "{}"'.format(e.stderr, ' '.join(cmd)))
+
+def watch_proc(proc):
+    output, error = proc.communicate()
+    try:
+        if proc.returncode != 0:
+            raise subprocess.CalledProcessError(proc.returncode, proc.args, output=output, stderr=error)
+        elif output:
+            return output.splitlines()
+        else:
+            return []
+    except Exception as e: #subprocess.CalledProcessError as e:
+        return str(e.stderr)
+
