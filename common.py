@@ -80,7 +80,7 @@ def subPopenTry(cmd):
         sys.exit('Stop: Error output: {} on cmd "{}"'.format(e.stderr, ' '.join(cmd)))
         return e.stderr
 
-def pathWinLin(path, winPathStart):
+def pathWinLin(path, winPathStart=None):
     # V: is windows VM drive assighed to shared_VMs
     linuxPathStart = '/mnt/'
     winLocalDrives = ['A','C','D','F']
@@ -289,8 +289,8 @@ def subPopenTry(cmd):
         output_lines = watch_proc(subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE))
     if 'error' in output_lines:
         return output_lines
-    else:
-        print(output_lines)
+    # else:
+    #     print(output_lines)
     # sys.exit('Stop: Error output: {} on cmd "{}"'.format(e.stderr, ' '.join(cmd)))
 
 def watch_proc(proc):
