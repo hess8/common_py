@@ -322,3 +322,10 @@ def watch_proc(proc):
     except Exception as e: #subprocess.CalledProcessError as e:
         return str(e.stderr)
 
+def sevenzip(itemPath,archive):
+    cmd = ['7z', 'a', '-mx=9', archive, itemPath]
+    subPopenTry(cmd)
+
+def sevenExtractSingleFile(archive,savePath):
+    cmd = ['7z', 'e', archive, '-so', '>' ,savePath]
+    subPopenTry(cmd)
