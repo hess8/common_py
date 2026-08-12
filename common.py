@@ -326,6 +326,6 @@ def sevenzip(itemPath,archive):
     cmd = ['7z', 'a', '-mx=9', archive, itemPath]
     subPopenTry(cmd)
 
-def sevenExtractSingleFile(archive,savePath):
-    cmd = ['7z', 'e', archive, '-so', '>' ,savePath]
+def seven_extract(archive,savePath):
+    cmd = ['7z', 'x', archive, f'-o{savePath}'] # x keeps subdir structure, e makes it flat
     subPopenTry(cmd)
