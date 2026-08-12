@@ -68,17 +68,34 @@ keepC2 = [  #of those that aren't in landscapesMap
     'Yellowstone_Park'
 ]
 
-def subPopenTry(cmd):
+def subPopenTry(cmd, results=False):
+    '''If > is in command Will dump output lines to path'''
+    if '>' in cmd:
+        if isinstance(cmd, str):
+            cmd = cmd.replace('  ', ' ').split(' ')
+        destination = cmd[-1]
+        base_cmd = cmd[:-2]
+        with open(destination, "wb") as fh:
+            output_lines = watch_proc(subprocess.Popen(base_cmd, stdout=fh, stderr=subprocess.PIPE,\
+                                                       text=True,shell=True))
+    else:
+        output_lines = watch_proc(subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,\
+                                                   text=True,shell=True))
+        if results: return output_lines
+    if 'error' in str(output_lines).lower():
+        return output_lines
+
+def watch_proc(proc):
+    output, error = proc.communicate()
     try:
-        proc = subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,shell=True)
-        output, error = proc.communicate()
         if proc.returncode != 0:
             raise subprocess.CalledProcessError(proc.returncode, proc.args, output=output, stderr=error)
-        outputLines = output.splitlines()
-        return outputLines
-    except subprocess.CalledProcessError as e:
-        sys.exit('Stop: Error output: {} on cmd "{}"'.format(e.stderr, ' '.join(cmd)))
-        return e.stderr
+        elif output:
+            return output.splitlines()
+        else:
+            return []
+    except Exception as e: #subprocess.CalledProcessError as e:
+        return str(e.stderr)
 
 def pathWinLin(path):
     linuxPathStart = '/mnt/'
