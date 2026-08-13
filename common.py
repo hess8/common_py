@@ -3,8 +3,8 @@ import platform
 import shutil
 from numpy import ceil
 # import pathlib
-#sambaServer = '\\\\192.168.1.40\\S\\'
-sambaServer = 'S:\\'
+sambaServer = '\\\\192.168.68.58\\S\\'
+# sambaServer = 'S:\\'
 
 versions = ['C2','C3']
 versionUpdateTag = '_to_{}'.format(versions[1])
@@ -102,10 +102,11 @@ def pathWinLin(path):
     linuxPathStart = '/mnt/'
     winLocalDrives = ['A','C','D','F']
     list = path.split(os.sep)
-    driveLetter = list[0]
+    driveLetter = list[0].strip(':')
     if platform.system() == 'Windows':
         if driveLetter.upper() in winLocalDrives:
-            list[0] += ':'
+            if list[0][-1] != ':':
+                list[0] += ':'
         elif sambaServer not in path:
             list[0] = sambaServer + list[0]
         path = os.sep.join(list)
