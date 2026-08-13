@@ -97,7 +97,7 @@ def watch_proc(proc):
     except Exception as e: #subprocess.CalledProcessError as e:
         return str(e.stderr)
 
-def pathWinLin(path, winPathStart=None):
+def pathWinLin(path):
     # V: is windows VM drive assighed to shared_VMs
     linuxPathStart = '/mnt/'
     winLocalDrives = ['A','C','D','F']
@@ -106,8 +106,8 @@ def pathWinLin(path, winPathStart=None):
     if platform.system() == 'Windows':
         if driveLetter.upper() in winLocalDrives:
             list[0] += ':'
-        elif winPathStart not in path:
-            list[0] = winPathStart + list[0]
+        elif sambaServer not in path:
+            list[0] = sambaServer + list[0]
         path = os.sep.join(list)
     elif linuxPathStart not in path:
         path = linuxPathStart + path
